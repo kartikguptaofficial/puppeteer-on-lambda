@@ -1,34 +1,31 @@
-# Using puppeteer on AWS Lambda function
+# Using Puppeteer on AWS Lambda Function
 
-We’ll be using the @sparticuz/chromium Layer to get the title of a webpage.
+This guide demonstrates how to use Puppeteer with an AWS Lambda function, leveraging the `@sparticuz/chromium` Layer to extract the title of a webpage. Additionally, it utilizes SST’s Live Lambda Development for local testing without the need for frequent redeployments.
 
-We’ll be using SST’s Live Lambda Development. It allows you to make changes and test locally without having to redeploy.
+## Requirements
+- Node.js 16 or later
+- TypeScript
+- An AWS account with the AWS CLI configured locally
 
-Requirements
-    Node.js 16 or later
-    We’ll be using TypeScript
-    An AWS account with the AWS CLI configured locally
+## Setup
+1. Download the `@sparticuz/chromium` Layer from the [Sparticuz/chromium GitHub release](https://github.com/Sparticuz/chromium/releases).
+2. Create a `layers/chromium` folder in the root of the project and unzip the downloaded file.
+3. Ensure the structure `layers/chromium/nodejs` exists, containing the `node_modules` folder and the `package.json` file.
+4. Create a `layers` folder in the root of the project.
+5. Within the `layers` folder, create a `nodejs` folder.
+6. Run `npm init` and install the `@sparticuz/chromium` package to create the `node_modules` folder.
 
-Here, we will download the Layer from the Sparticuz/chromium GitHub release. Create folder layers/chromium in the root of the project and unzip the file layer then you will have layers/chromium/nodejs. The nodejs folder contains the node_modules folder and the package.json file.
-    - Create a layers folder in the root of the project.
-    - Create a nodejs folder in the layers folder.
-    - npm init
-    - Install the @sparticuz/chromium package, which will create the node_modules folder there.
+## Configurations
+- Adjust the timeout of the lambda function to fit your requirements, with a maximum timeout of 900s (15 mins).
+- Customize the memory size of the lambda function according to your needs, with a maximum memory size of 3008 MB.
 
-Configurations: 
-    - Increase timeout of lambda function according to your requirements, maximum timeout of lambda is 900s (15 mins).
-    - Increase the memory size of lambda function according to your requirements, maximum memory size is 3008 MB
+## Usage
+- Run `npm run dev` to start the function locally.
+- Run `npm run deploy` to deploy the function, or `npx sst deploy --stage prod` for the production stage.
 
-Start commands: 
-    - npm run dev (to start the function locally)
-    - npm run deploy (to deploy the function) or npx sst deploy --stage prod (for stage prod)
+## Notes
+Puppeteer requires a chromium binary file to run the browser on the cloud. The `@sparticuz/chromium` package is used to manage this requirement. However, due to the large size of the Chromium binary file, it cannot be deployed directly to the lambda function. Instead, it is configured within the layers. The chromium file is deployed to layers, and the lambda function utilizes this layer to access chromium.
 
+For more details, refer to [SST's documentation on using Lambda Layers](https://sst.dev/examples/how-to-use-lambda-layers-in-your-serverless-app.html).
 
-Puppeteer requires a chromium binary file in order to run the browser on cloud, for that we are using @sparticuz/chromium package here,
-Chromium binary file occupies a good space which cannot be deployed to lambda function directly, so here we have configured that file in
-the layers, so that the chromium file will be deployed to layers instead of lambda, and then the lambda function will use that layer to use
-chromium.
-
-For more details: https://sst.dev/examples/how-to-use-lambda-layers-in-your-serverless-app.html
-
-- By Kartik
+By Kartik
